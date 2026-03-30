@@ -28,7 +28,6 @@ class LoginPage extends StatelessWidget {
               size: 60,
               color: Theme.of(context).colorScheme.primary,
             ),
-
             const SizedBox(height: 50),
 
             // welcome back message
@@ -40,7 +39,6 @@ class LoginPage extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
-
             const SizedBox(height: 25),
 
             // email text field

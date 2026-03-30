@@ -30,7 +30,6 @@ class RegisterPage extends StatelessWidget {
               size: 60,
               color: Theme.of(context).colorScheme.primary,
             ),
-
             const SizedBox(height: 50),
 
             // create account message
@@ -42,7 +41,6 @@ class RegisterPage extends StatelessWidget {
                 color: Theme.of(context).colorScheme.primary,
               ),
             ),
-
             const SizedBox(height: 25),
 
             // email text field

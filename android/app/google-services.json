@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "424216711454",
+    "project_id": "chatapptutorial-1d820",
+    "storage_bucket": "chatapptutorial-1d820.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:424216711454:android:2c79fb59364b979d11790f",
+        "android_client_info": {
+          "package_name": "com.example.flutter_chat_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBWTIdctvjz1jaaANGIiqQr9NRZ_IO8gbw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
