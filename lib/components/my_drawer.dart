@@ -1,6 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/auth/auth_service.dart';
+import 'package:flutter_chat_app/services/auth/auth_service.dart';
 import 'package:flutter_chat_app/screens/settings_page.dart';
 
 class MyDrawer extends StatelessWidget {

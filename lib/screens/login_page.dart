@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/auth/auth_service.dart';
+import 'package:flutter_chat_app/services/auth/auth_service.dart';
 import 'package:flutter_chat_app/components/my_button.dart';
 import 'package:flutter_chat_app/components/my_textfield.dart';
 
@@ -16,17 +16,10 @@ class LoginPage extends StatelessWidget {
   void login(BuildContext context) async {
     final authService = AuthService();
     try {
-      final user = await authService.signIn(
+      await authService.signInWithEmailAndPassword(
         _emailController.text,
         _passwordController.text,
       );
-      if (user != null) {
-        // Login successful, navigate to the home page or show a success message
-        print('Login successful: ${user.email}');
-      } else {
-        // Login failed, show an error message
-        print('Login failed');
-      }
     } catch (e) {
       showDialog(
         context: context,

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_chat_app/auth/auth_service.dart';
+import 'package:flutter_chat_app/services/auth/auth_service.dart';
 import 'package:flutter_chat_app/components/my_button.dart';
 import 'package:flutter_chat_app/components/my_textfield.dart';
 
@@ -17,24 +17,17 @@ class RegisterPage extends StatelessWidget {
   // Register user method
   void register(BuildContext context) async {
     // Get auth service instance
-    final _auth = AuthService();
+    final auth = AuthService();
     try {
       // Check if passwords match
       if (_passwordController.text != _confirmPasswordController.text) {
         throw Exception('Passwords do not match');
       }
       // Attempt to register the user
-      final user = await _auth.signUp(
+      await auth.signUpWithEmailAndPassword(
         _emailController.text,
         _passwordController.text,
       );
-      if (user != null) {
-        // Registration successful, navigate to the home page or show a success message
-        print('Registration successful: ${user.email}');
-      } else {
-        // Registration failed, show an error message
-        print('Registration failed');
-      }
     } catch (e) {
       showDialog(
         context: context,
