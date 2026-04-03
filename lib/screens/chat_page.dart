@@ -5,36 +5,84 @@ import 'package:flutter_chat_app/services/auth/auth_service.dart';
 import 'package:flutter_chat_app/services/chat/chat_services.dart';
 import 'package:flutter_chat_app/components/my_textfield.dart';
 
-class ChatPage extends StatelessWidget {
+class ChatPage extends StatefulWidget {
   final String receiverEmail;
   final String receiverId;
 
-  ChatPage({super.key, required this.receiverEmail, required this.receiverId});
+  const ChatPage({
+    super.key,
+    required this.receiverEmail,
+    required this.receiverId,
+  });
 
-  // Text Controller for the message input field
+  @override
+  State<ChatPage> createState() => _ChatPageState();
+}
+
+class _ChatPageState extends State<ChatPage> {
   final TextEditingController _messageController = TextEditingController();
-
-  // Chat & auth services
   final ChatServices _chatServices = ChatServices();
   final AuthService _authService = AuthService();
 
-  // Send message function
+  FocusNode myFocusNode = FocusNode();
+  final ScrollController _scrollController = ScrollController();
+
+  @override
+  void initState() {
+    super.initState();
+
+    myFocusNode.addListener(() {
+      if (myFocusNode.hasFocus) {
+        Future.delayed(const Duration(milliseconds: 300), () => scrollDown());
+      }
+    });
+
+    Future.delayed(const Duration(milliseconds: 300), () => scrollDown());
+  }
+
+  @override
+  void dispose() {
+    myFocusNode.dispose();
+    _messageController.dispose();
+    _scrollController.dispose();
+    super.dispose();
+  }
+
+  void scrollDown() {
+    if (_scrollController.hasClients) {
+      _scrollController.animateTo(
+        _scrollController.position.maxScrollExtent,
+        duration: const Duration(milliseconds: 400),
+        curve: Curves.easeOut,
+      );
+    }
+  }
+
+  bool isAtBottom() {
+    if (!_scrollController.hasClients) return true;
+
+    return _scrollController.offset >=
+        _scrollController.position.maxScrollExtent - 100;
+  }
+
   void _sendMessage() async {
-    // If there is a message inside the text field
     if (_messageController.text.isNotEmpty) {
-      // Send the message using chat services
-      await _chatServices.sendMessage(receiverId, _messageController.text);
-      // Clear the text field after sending
+      await _chatServices.sendMessage(
+        widget.receiverId,
+        _messageController.text,
+      );
       _messageController.clear();
     }
+    scrollDown();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: true,
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
-        title: Text(receiverEmail),
+        title: Text(widget.receiverEmail),
         backgroundColor: Theme.of(context).colorScheme.surface,
         foregroundColor: Colors.grey[700],
         elevation: 0,
@@ -52,19 +100,29 @@ class ChatPage extends StatelessWidget {
 
   Widget _buildMessagesList() {
     String senderId = _authService.getCurrentUser()!.uid;
+
     return StreamBuilder(
-      stream: _chatServices.getMessages(receiverId, senderId),
+      stream: _chatServices.getMessages(widget.receiverId, senderId),
       builder: (context, snapshot) {
-        // Error
         if (snapshot.hasError) {
           return const Center(child: Text("Error loading messages"));
         }
-        // Loading
+
         if (snapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
-        // Return listView
+
+        if (snapshot.hasData) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            if (isAtBottom()) {
+              scrollDown();
+            }
+          });
+        }
+
         return ListView(
+          controller: _scrollController,
+          padding: const EdgeInsets.symmetric(vertical: 10),
           children: snapshot.data!.docs
               .map((doc) => _buildMessageItem(doc))
               .toList(),
@@ -76,49 +134,51 @@ class ChatPage extends StatelessWidget {
   Widget _buildMessageItem(DocumentSnapshot doc) {
     Map<String, dynamic> data = doc.data() as Map<String, dynamic>;
 
-    // Is current user the sender of the message?
     bool isCurrentUser = data["senderId"] == _authService.getCurrentUser()!.uid;
 
-    // Align message to the right if current user is the sender, otherwise align to the left
     var alignment = isCurrentUser
         ? Alignment.centerRight
         : Alignment.centerLeft;
 
+    // Format time
+    String time = "";
+    if (data["timestamp"] != null) {
+      Timestamp ts = data["timestamp"];
+      DateTime date = ts.toDate();
+      time =
+          "${date.hour.toString().padLeft(2, '0')}:${date.minute.toString().padLeft(2, '0')}";
+    }
+
     return Container(
       alignment: alignment,
-      child: Column(
-        crossAxisAlignment: isCurrentUser
-            ? CrossAxisAlignment.end
-            : CrossAxisAlignment.start,
-        children: [
-          ChatBubble(message: data["message"], isCurrentUser: isCurrentUser),
-        ],
+      margin: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      child: ChatBubble(
+        message: data["message"],
+        isCurrentUser: isCurrentUser,
+        time: time,
       ),
     );
   }
 
-  // User input widget
   Widget _buildUserInput() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 50.0),
+      padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10, top: 10),
       child: Row(
         children: [
-          // Text field for message input
           Expanded(
             child: MyTextfield(
               hintText: "Type your message here",
               obscureText: false,
               controller: _messageController,
+              focusNode: myFocusNode,
             ),
           ),
-
-          // Send button
+          const SizedBox(width: 10),
           Container(
             decoration: const BoxDecoration(
               color: Colors.green,
               shape: BoxShape.circle,
             ),
-            margin: const EdgeInsets.only(right: 25.0),
             child: IconButton(
               icon: const Icon(Icons.send, color: Colors.white),
               onPressed: _sendMessage,

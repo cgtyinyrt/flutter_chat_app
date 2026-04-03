@@ -5,11 +5,13 @@ import 'package:provider/provider.dart';
 class ChatBubble extends StatelessWidget {
   final String message;
   final bool isCurrentUser;
+  final String time;
 
   const ChatBubble({
     super.key,
     required this.message,
     required this.isCurrentUser,
+    required this.time,
   });
 
   @override
@@ -42,6 +44,16 @@ class ChatBubble extends StatelessWidget {
                   : isDarkMode
                   ? Colors.white
                   : Colors.black,
+            ),
+          ),
+          const SizedBox(width: 6),
+
+          // Time inside bubble
+          Text(
+            time,
+            style: TextStyle(
+              fontSize: 10,
+              color: isCurrentUser ? Colors.white70 : Colors.black54,
             ),
           ),
         ],
