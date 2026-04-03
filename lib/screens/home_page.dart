@@ -16,9 +16,10 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: AppBar(
         title: const Text('Home Page'),
-        backgroundColor: const Color.fromARGB(255, 116, 19, 19),
+        backgroundColor: Theme.of(context).colorScheme.surface,
         foregroundColor: Colors.grey[700],
         elevation: 0,
       ),
