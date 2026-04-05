@@ -29,8 +29,7 @@ class ChatBubble extends StatelessWidget {
             : (isDarkMode ? Colors.grey.shade800 : Colors.grey.shade200),
         borderRadius: BorderRadius.circular(12),
       ),
-      padding: const EdgeInsets.all(10.0),
-      margin: const EdgeInsets.symmetric(vertical: 4.0, horizontal: 10.0),
+      padding: const EdgeInsets.all(5.0),
       child: Column(
         crossAxisAlignment: isCurrentUser
             ? CrossAxisAlignment.end
@@ -46,7 +45,6 @@ class ChatBubble extends StatelessWidget {
                   : Colors.black,
             ),
           ),
-          const SizedBox(width: 6),
 
           // Time inside bubble
           Text(

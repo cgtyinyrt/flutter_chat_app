@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_chat_app/components/chat_bubble.dart';
 import 'package:flutter_chat_app/services/auth/auth_service.dart';
 import 'package:flutter_chat_app/services/chat/chat_services.dart';
-import 'package:flutter_chat_app/components/my_textfield.dart';
+import 'package:flutter_chat_app/components/my_chattextfield.dart';
 
 class ChatPage extends StatefulWidget {
   final String receiverEmail;
@@ -33,11 +33,10 @@ class _ChatPageState extends State<ChatPage> {
 
     myFocusNode.addListener(() {
       if (myFocusNode.hasFocus) {
-        Future.delayed(const Duration(milliseconds: 300), () => scrollDown());
+        Future.delayed(const Duration(milliseconds: 500), () => scrollDown());
       }
     });
-
-    Future.delayed(const Duration(milliseconds: 300), () => scrollDown());
+    Future.delayed(const Duration(milliseconds: 500), () => scrollDown());
   }
 
   @override
@@ -60,7 +59,6 @@ class _ChatPageState extends State<ChatPage> {
 
   bool isAtBottom() {
     if (!_scrollController.hasClients) return true;
-
     return _scrollController.offset >=
         _scrollController.position.maxScrollExtent - 100;
   }
@@ -162,18 +160,18 @@ class _ChatPageState extends State<ChatPage> {
 
   Widget _buildUserInput() {
     return Padding(
-      padding: const EdgeInsets.only(bottom: 20, left: 10, right: 10, top: 10),
+      padding: const EdgeInsets.only(bottom: 50, left: 5, right: 5, top: 5),
       child: Row(
         children: [
           Expanded(
-            child: MyTextfield(
+            child: MyChatTextField(
               hintText: "Type your message here",
               obscureText: false,
               controller: _messageController,
               focusNode: myFocusNode,
             ),
           ),
-          const SizedBox(width: 10),
+          const SizedBox(width: 5),
           Container(
             decoration: const BoxDecoration(
               color: Colors.green,

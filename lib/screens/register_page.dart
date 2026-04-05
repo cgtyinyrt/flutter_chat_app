@@ -29,11 +29,13 @@ class RegisterPage extends StatelessWidget {
         _passwordController.text,
       );
     } catch (e) {
-      showDialog(
-        context: context,
-        builder: (context) =>
-            const AlertDialog(title: Text("Passwords don't match!")),
-      );
+      if (context.mounted) {
+        showDialog(
+          context: context,
+          builder: (context) =>
+              const AlertDialog(title: Text("Passwords don't match!")),
+        );
+      }
     }
   }
 
